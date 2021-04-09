@@ -1,0 +1,15 @@
+matplotlib
+pandas
+numpy
+opencv-python
+jupyter
+python-dotenv
+torch
+torchvision
+pytorch-lightning
+seml
+sacred
+autopep8
+pycocotools
+scipy
+seaborn
