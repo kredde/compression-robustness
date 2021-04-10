@@ -6,7 +6,7 @@
 defaults:
     - override /trainer: default_trainer.yaml
     - override /model: simple_model.yaml
-    - override /datamodule: mnist_datamodule.yaml
+    - override /datamodule: cifar_datamodule.yaml
     - override /callbacks: default_callbacks.yaml
     - override /logger: tensorboard.yaml
 
@@ -18,7 +18,7 @@ trainer:
     max_epochs: 2
 
 model:
-    input_size: 784
+    input_size: 3072
     lin1_size: 256
     output_size: 10
     lr: 0.001
@@ -26,4 +26,3 @@ model:
 
 datamodule:
     batch_size: 64
-    train_val_split: [55_000, 5_000]
