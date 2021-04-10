@@ -129,6 +129,8 @@ data/*
 # models
 models/*
 
+logs/*
+
 temp
 
 nohup/*
