@@ -1,0 +1,4 @@
+# https://pytorch.org/tutorials/advanced/static_quantization_tutorial.html
+
+type: static
+backend: fbgemm # fbgemm, qnnpack

@@ -19,4 +19,5 @@ dependencies:
     - autopep8
     - scipy
     - seaborn
+    - jupyter
     - pip

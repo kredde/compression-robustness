@@ -5,24 +5,7 @@ import torch
 from pytorch_lightning import LightningModule
 from pytorch_lightning.metrics.classification import Accuracy
 from torch import nn
-
-
-class SimpleDenseNet(nn.Module):
-    def __init__(self, hparams: dict):
-        super().__init__()
-
-        self.model = nn.Sequential(
-            nn.Linear(hparams['input_size'], hparams['lin1_size']),
-            nn.BatchNorm1d(hparams['lin1_size']),
-            nn.ReLU(),
-            nn.Linear(hparams['lin1_size'], hparams['output_size'])
-        )
-
-    def forward(self, x):
-        batch_size, channels, width, height = x.size()
-        x = x.view(batch_size, -1)
-
-        return self.model(x)
+from torch.quantization import QuantStub, DeQuantStub
 
 
 class SimpleModel(LightningModule):
@@ -44,7 +27,14 @@ class SimpleModel(LightningModule):
         # this line ensures params passed to LightningModule will be saved to ckpt
         self.save_hyperparameters()
 
-        self.model = SimpleDenseNet(hparams=self.hparams)
+        self.quant = QuantStub()
+        self.lin1 = nn.Linear(
+            self.hparams['input_size'], self.hparams['lin1_size'])
+        # self.bn = nn.BatchNorm1d(self.hparams['lin1_size'])
+        self.relu = nn.ReLU()
+        self.lin2 = nn.Linear(
+            self.hparams['lin1_size'], self.hparams['output_size'])
+        self.dequant = DeQuantStub()
 
         self.criterion = torch.nn.CrossEntropyLoss()
 
@@ -62,7 +52,16 @@ class SimpleModel(LightningModule):
         }
 
     def forward(self, x: torch.Tensor):
-        return self.model(x)
+        batch_size, channels, width, height = x.size()
+        x = x.view(batch_size, -1)
+
+        x = self.quant(x)
+        x = self.lin1(x)
+        # x = self.bn(x)
+        x = self.relu(x)
+        x = self.lin2(x)
+        x = self.dequant(x)
+        return x
 
     def step(self, batch: Any):
         x, y = batch
@@ -131,3 +130,7 @@ class SimpleModel(LightningModule):
 
     def configure_optimizers(self):
         return torch.optim.Adam(params=self.parameters(), lr=self.hparams.lr, weight_decay=self.hparams.weight_decay)
+
+    def fuse_model(self):
+        torch.quantization.fuse_modules(
+            self, ['lin1', 'relu'], inplace=True)

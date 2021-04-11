@@ -1,0 +1,18 @@
+# @package _global_
+
+# to execute this experiment run:
+# python main.py +experiment=static_quantization_mnist
+
+defaults:
+    - override /trainer: default_trainer.yaml
+    - override /model: simple_model.yaml
+    - override /datamodule: mnist_datamodule.yaml
+    - override /callbacks: default_callbacks.yaml
+    - override /logger: tensorboard.yaml
+    - override /quantization: static_quantization.yaml
+
+
+seed: 42
+
+trainer:
+  max_epochs: 2
