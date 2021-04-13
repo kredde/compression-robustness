@@ -76,7 +76,9 @@ def train(config: DictConfig) -> Optional[float]:
     # Evaluate model on test set after training
     if not config.trainer.get('fast_dev_run'):
         log.info('Testing')
-        trainer.test()
+        result = trainer.test()
+        log.info('TEST RESULT: ' +
+                 ' '.join([f'{key}: {result[0][key]}' for key in result[0].keys()]))
 
     # Print path to best checkpoint
     log.info(
@@ -84,7 +86,7 @@ def train(config: DictConfig) -> Optional[float]:
 
     # quantization
     if config.get('quantization') and not config.trainer.get('fast_dev_run'):
-        log.info(f'Starting quantization: <{config.quantization.type}')
+        log.info(f'Starting quantization: {config.quantization.type}')
         pre_q_size = get_model_size(model)
 
         assert config.quantization.type in ['static']
@@ -93,6 +95,10 @@ def train(config: DictConfig) -> Optional[float]:
                 model, datamodule.train_dataloader(), **config.quantization)
 
         log.info('Quantization finished')
-        trainer.test(q_model, test_dataloaders=[datamodule.test_dataloader()])
+        result = trainer.test(q_model, test_dataloaders=[
+                              datamodule.test_dataloader()])
+        print(result)
+        log.info('QTEST RESULT: ' +
+                 ' '.join([f'{key}: {result[0][key]}' for key in result[0].keys()]))
         log.info(
             f'Model size: Before: {pre_q_size}MB. After: {get_model_size(q_model)}MB')
