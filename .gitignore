@@ -136,6 +136,4 @@ temp
 nohup/*
 lightning_logs/*
 slurm/*
-
-schwienb
-yurtkulus
+mlruns/*

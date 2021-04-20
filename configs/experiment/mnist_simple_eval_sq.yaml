@@ -1,0 +1,11 @@
+# @package _global_
+
+defaults:
+    - override /quantization: static_quantization.yaml
+
+exp_id: c8dfb1a4ee364d7facdcb53480bafa5c
+
+logger:
+    mlflow:
+      tags:
+        type: quantization

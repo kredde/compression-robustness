@@ -24,4 +24,4 @@ def load_experiment(path: str, checkpoint: str = 'last.ckpt'):
 
     model = model.load_from_checkpoint(path + '/checkpoints/' + checkpoint)
 
-    return model, datamodule
+    return model, datamodule, config

@@ -50,7 +50,10 @@ def train(config: DictConfig) -> Optional[float]:
         for _, lg_conf in config['logger'].items():
             if '_target_' in lg_conf:
                 log.info(f'Instantiating logger <{lg_conf._target_}>')
-                logger.append(instantiate(lg_conf))
+                pl_logger = instantiate(lg_conf)
+                logger.append(pl_logger)
+            if lg_conf['_target_'] == 'pytorch_lightning.loggers.MLFlowLogger':
+                mlf_logger = pl_logger
 
     # Init Lightning trainer
     log.info(f'Instantiating trainer <{config.trainer._target_}>')
@@ -69,11 +72,14 @@ def train(config: DictConfig) -> Optional[float]:
         logger=logger,
     )
 
+    mlf_logger.experiment.log_param(
+        mlf_logger._run_id, "ml-flow/run_id", mlf_logger._run_id)
+
     # Train the model
     log.info('Training')
     trainer.fit(model=model, datamodule=datamodule)
 
-    # Evaluate model on test set after training
+    # evaluate model on test set after training
     if not config.trainer.get('fast_dev_run'):
         log.info('Testing')
         result = trainer.test()
@@ -83,22 +89,3 @@ def train(config: DictConfig) -> Optional[float]:
     # Print path to best checkpoint
     log.info(
         f'Best checkpoint path:\n{trainer.checkpoint_callback.best_model_path}')
-
-    # quantization
-    if config.get('quantization') and not config.trainer.get('fast_dev_run'):
-        log.info(f'Starting quantization: {config.quantization.type}')
-        pre_q_size = get_model_size(model)
-
-        assert config.quantization.type in ['static']
-        if config.quantization.type == 'static':
-            q_model = quantize_static(
-                model, datamodule.train_dataloader(), **config.quantization)
-
-        log.info('Quantization finished')
-        result = trainer.test(q_model, test_dataloaders=[
-                              datamodule.test_dataloader()])
-        print(result)
-        log.info('QTEST RESULT: ' +
-                 ' '.join([f'{key}: {result[0][key]}' for key in result[0].keys()]))
-        log.info(
-            f'Model size: Before: {pre_q_size}MB. After: {get_model_size(q_model)}MB')

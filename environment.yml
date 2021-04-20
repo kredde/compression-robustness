@@ -21,3 +21,4 @@ dependencies:
     - seaborn
     - jupyter
     - pip
+    - mlflow

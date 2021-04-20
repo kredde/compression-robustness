@@ -88,8 +88,10 @@ def log_hyperparameters(
 
     # choose which parts of hydra config will be saved to loggers
     hparams["trainer"] = config["trainer"]
-    hparams["model"] = config["model"]
-    hparams["datamodule"] = config["datamodule"]
+    if "model" in config:
+        hparams["model"] = config["model"]
+    if "datamodule" in config:
+        hparams["datamodule"] = config["datamodule"]
     if "optimizer" in config:
         hparams["optimizer"] = config["optimizer"]
     if "callbacks" in config:
@@ -103,6 +105,7 @@ def log_hyperparameters(
     hparams["model/params_not_trainable"] = sum(
         p.numel() for p in model.parameters() if not p.requires_grad
     )
+    hparams["hydra/log_dir"] = config["log_dir"]
 
     # send hparams to all loggers
     trainer.logger.log_hyperparams(hparams)
