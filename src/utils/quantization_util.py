@@ -1,6 +1,11 @@
 import os
 import torch
 
+UINT_BOUNDS = {8: [0, 255], 7: [0, 127], 6: [0, 63],
+               5: [0, 31], 4: [0, 15], 3: [0, 7], 2: [0, 3]}
+INT_BOUNDS = {8: [-128, 127], 7: [-64, 63], 6: [-32, 31],
+              5: [-16, 15], 4: [-8, 7], 3: [-4, 3], 2: [-2, 1]}
+
 
 def calibrate_model(model, criterion, data_loader, neval_batches):
     """

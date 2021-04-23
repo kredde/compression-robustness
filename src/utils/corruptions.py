@@ -8,37 +8,6 @@ import typing
 _SUPPORTED_EXTENSIONS = ('png', 'jpg', 'jpeg', 'gif', 'ppm', 'tga')
 
 
-class CorruptionManager:
-    def __init__(self, original_ds_path: str, corrupted_ds_path: str, corruption_name: str, corruption_severity: int):
-        """Corrupts a datasets with the specified corruption and removes it after the context is exited
-
-        :param original_ds_path: Path to the root of the uncorrupted dataset
-        :param corrupted_ds_path: Path where the corrupted dataset will be created. Mustn't exist yet
-        :param corruption_name: Name of the corruption to apply
-        :param corruption_severity: Severity (1-5) of the applied corruption
-        """
-        self.original_ds_path = os.path.realpath(
-            os.path.expanduser(original_ds_path))
-        self.corrupted_ds_path = os.path.realpath(
-            os.path.expanduser(corrupted_ds_path))
-        self.corruption_name = corruption_name
-        self.corruption_severity = corruption_severity
-
-        # If the path where the corrupted dataset will be created already exists, raise an exception to
-        # prevent any accidental data loss when the corrupted dataset is removed after exiting the context
-        if os.path.exists(self.corrupted_ds_path):
-            raise Exception(
-                'corrupted_ds_path mustn\'t exist already. It\'s a safety measure to prevent accidental loss of data')
-
-    def __enter__(self) -> None:
-        corrupt_dataset(self.original_ds_path, self.corrupted_ds_path,
-                        self.corruption_name, self.corruption_severity)
-
-    def __exit__(self, exc_type, exc_value, exc_traceback) -> None:
-        # Removes the corrupted dataset entirely
-        shutil.rmtree(self.corrupted_ds_path)
-
-
 def corrupt_dataset(original_ds_path: str, corrupted_ds_path: str, corruption_name: str,
                     corruption_severity: int) -> None:
     """Creates a copy of the dataset and corrupts it with the given corruption and severity
