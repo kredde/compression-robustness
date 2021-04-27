@@ -119,3 +119,10 @@ def log_hyperparameters(
 
 def empty(a):
     pass
+
+
+def format_result(result, prefix=None):
+    d = {}
+    for key in result[0].keys():
+        d[f'{prefix}_{key}' if prefix else key] = result[0][key]
+    return d

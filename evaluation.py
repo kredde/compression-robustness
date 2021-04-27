@@ -1,9 +1,7 @@
 import logging
-from typing import List
 import dotenv
 import hydra
 from omegaconf import DictConfig
-from pytorch_lightning.loggers.base import LightningLoggerBase
 
 
 dotenv.load_dotenv(override=True)

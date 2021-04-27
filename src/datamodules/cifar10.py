@@ -1,3 +1,4 @@
+from src.datamodules.data.corruptions import CorruptionDataloader
 from typing import Optional, Tuple
 
 from pytorch_lightning import LightningDataModule
@@ -62,6 +63,8 @@ class CIFAR10DataModule(LightningDataModule):
         self.data_train, self.data_val,  = random_split(
             trainset, self.train_val_split)
         self.data_test = testset
+        self.data_c_test = CorruptionDataloader(
+            CIFAR10(self.data_dir, train=False), 'CIFAR', self.transforms)
 
     def train_dataloader(self):
         return DataLoader(
@@ -85,6 +88,15 @@ class CIFAR10DataModule(LightningDataModule):
         return DataLoader(
             dataset=self.data_test,
             batch_size=self.batch_size,
+            num_workers=self.num_workers,
+            pin_memory=self.pin_memory,
+            shuffle=False,
+        )
+
+    def test_c_dataloader(self):
+        return DataLoader(
+            dataset=self.data_c_test,
+            batch_size=1,
             num_workers=self.num_workers,
             pin_memory=self.pin_memory,
             shuffle=False,

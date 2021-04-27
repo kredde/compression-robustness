@@ -57,7 +57,6 @@ class SimpleModel(LightningModule):
 
         x = self.quant(x)
         x = self.lin1(x)
-        # x = self.bn(x)
         x = self.relu(x)
         x = self.lin2(x)
         x = self.dequant(x)
@@ -77,7 +76,8 @@ class SimpleModel(LightningModule):
         acc = self.train_accuracy(preds, targets)
         self.log('train/loss', loss, on_step=False,
                  on_epoch=True, prog_bar=False)
-        self.log('train/acc', acc, on_step=False, on_epoch=True, prog_bar=True)
+        self.log('train/acc', acc, on_step=False,
+                 on_epoch=True, prog_bar=True)
 
         return {'loss': loss, 'preds': preds, 'targets': targets}
 
