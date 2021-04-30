@@ -5,4 +5,4 @@ mlflow:
     experiment_name: "default"
     tags:
         stage: train
-    tracking_uri: "file:${work_dir}/mlruns"
+    tracking_uri: "file:/data/logs/kristian/mlruns"

@@ -3,7 +3,10 @@
 defaults:
     - override /quantization: static_quantization.yaml
 
-exp_id: 13608d394b4146b2bc186aa448a9b6c1
+exp_id: c8ed0ff1f8314393b8a3db097f86c529
+
+trainer:
+  gpus: 0
 
 logger:
     mlflow:

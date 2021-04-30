@@ -96,7 +96,7 @@ class CIFAR10DataModule(LightningDataModule):
     def test_c_dataloader(self):
         return DataLoader(
             dataset=self.data_c_test,
-            batch_size=1,
+            batch_size=self.batch_size,
             num_workers=self.num_workers,
             pin_memory=self.pin_memory,
             shuffle=False,

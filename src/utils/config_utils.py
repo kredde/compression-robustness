@@ -7,6 +7,7 @@
 import logging
 import warnings
 from typing import List
+import os
 
 import pytorch_lightning as pl
 from omegaconf import DictConfig, OmegaConf
@@ -25,6 +26,9 @@ def extras(config: DictConfig) -> None:
     Args:
         config (DictConfig): [description]
     """
+
+    if config.gpu_id:
+        os.environ['CUDA_VISIBLE_DEVICES'] = config.gpu_id
 
     # enable adding new keys to config
     OmegaConf.set_struct(config, False)

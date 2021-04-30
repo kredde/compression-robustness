@@ -10,7 +10,7 @@ from pytorch_lightning.loggers.base import LightningLoggerBase
 
 from src.experiments.static_quantization import quantize_static
 from src.utils.quantization_util import get_model_size
-from src.utils import config_utils, format_result
+from src.utils import config_utils
 
 log = logging.getLogger(__name__)
 
@@ -18,11 +18,11 @@ log = logging.getLogger(__name__)
 def test_model(model: LightningModule, trainer: Trainer, datamodule: LightningDataModule, logger: LightningLoggerBase, name: str = None):
     test_result = trainer.test(model, test_dataloaders=[
                                datamodule.test_dataloader()])
-    logger.log_metrics(format_result(test_result, name))
+    logger.log_metrics(config_utils.format_result(test_result, name))
 
     c_result = trainer.test(model, test_dataloaders=[
                             datamodule.test_c_dataloader()])
-    logger.log_metrics(format_result(c_result, f'{name}_c' if name else 'c'))
+    logger.log_metrics(config_utils.format_result(c_result, f'{name}_c' if name else 'c'))
 
     return {'t': test_result[0], 'c': c_result}
 

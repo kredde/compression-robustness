@@ -14,12 +14,14 @@ defaults:
     # - override hydra/job_logging: colorlog
 
 work_dir: ${hydra:runtime.cwd}
-data_dir: ${work_dir}/data/
-log_dir: logs/runs/${logger.mlflow.experiment_name}/${now:%H-%M-%S}
+data_dir: /data/datasets
+log_dir: /data/logs/kristian/runs/${logger.mlflow.experiment_name}/${now:%H-%M-%S}
 
 # use `python main.py debug=true` for easy debugging
 # this will run 1 train, val and test loop with only 1 batch
 debug: False
+
+gpu_id: '1'
 
 disable_warnings: True
 

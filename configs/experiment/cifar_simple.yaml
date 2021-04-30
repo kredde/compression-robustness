@@ -12,7 +12,7 @@ defaults:
 seed: 42
 
 trainer:
-  max_epochs: 2
+  max_epochs: 10
 
 model:
   input_size: 3072

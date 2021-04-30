@@ -12,11 +12,13 @@ logger:
         stage: eval
 
 work_dir: ${hydra:runtime.cwd}
-data_dir: ${work_dir}/data/
+data_dir: /data/datasets
 
-log_dir: logs/runs/${logger.mlflow.experiment_name}/eval/${now:%H-%M-%S}
+log_dir: /data/logs/kristian/runs/${logger.mlflow.experiment_name}/${now:%H-%M-%S}
 
 disable_warnings: True
+
+gpu_id: None
 
 hydra:
     # output paths for hydra logs

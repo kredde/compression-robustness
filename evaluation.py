@@ -28,14 +28,15 @@ def main(config: DictConfig):
         client = mlflow.tracking.MlflowClient(
             tracking_uri=config.logger.mlflow.tracking_uri)
         data = client.get_run(config.get('exp_id')).to_dictionary()
-        log_dir = data['data']['params']['hydra/log_dir']
+        log_dir: str = data['data']['params']['hydra/log_dir']
     else:
         # TODO: Find a easier way to load a past configuration
         raise Exception(
             '`exp_id` must be defined in order to evaluate an existing experiment')
 
     # load the saved model and datamodule
-    log_dir = utils.get_original_cwd() + '/' + log_dir
+    if  not log_dir.startswith('/'):
+        log_dir = utils.get_original_cwd() + '/' + log_dir
     model, datamodule, exp_config = model.load_experiment(log_dir)
 
     # instanciate mlflow and the trainer for the evaluation
