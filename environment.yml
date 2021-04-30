@@ -23,3 +23,4 @@ dependencies:
     - pip
     - mlflow
     - imagecorruptions
+    - cai_robustness_metrics
