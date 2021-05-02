@@ -1,0 +1,19 @@
+# @package _global_
+
+# to execute this experiment run:
+# python main.py +experiment=resnet50
+defaults:
+  - override /model: resnet50.yaml
+  - override /datamodule: cifar_datamodule.yaml
+
+seed: 42
+
+trainer:
+  max_epochs: null
+
+datamodule:
+  batch_size: 128
+
+logger:
+  mlflow:
+    experiment_name: "CIFAR_RESNET50"

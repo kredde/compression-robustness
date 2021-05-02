@@ -1,0 +1,4 @@
+_target_: src.models.inception.InceptionV3
+
+lr: 0.1
+weight_decay: 0.0005

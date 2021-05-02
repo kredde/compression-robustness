@@ -1,0 +1,14 @@
+# @package _global_
+
+defaults:
+  - override /quantization: static_quantization.yaml
+
+exp_id: b76d033faf8742c481f699d879447240
+
+trainer:
+  gpus: 0
+
+logger:
+  mlflow:
+    tags:
+      type: quantization

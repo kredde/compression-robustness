@@ -2,14 +2,14 @@
 
 # default configuration
 defaults:
-    - logger: mlflow.yaml
-    - trainer: default_trainer.yaml
-    - quantization: null
+  - logger: mlflow.yaml
+  - trainer: default_trainer.yaml
+  - quantization: null
 
 logger:
-    mlflow:
-      tags:
-        stage: eval
+  mlflow:
+    tags:
+      stage: eval
 
 work_dir: ${hydra:runtime.cwd}
 data_dir: /data/datasets
@@ -21,9 +21,9 @@ disable_warnings: True
 gpu_id: None
 
 hydra:
-    # output paths for hydra logs
-    run:
-        dir: ${log_dir}
-    sweep:
-        dir: logs/multiruns/${now:%Y-%m-%d_%H-%M-%S}
-        subdir: ${hydra.job.num}
+  # output paths for hydra logs
+  run:
+    dir: ${log_dir}
+  sweep:
+    dir: ${log_dir}
+    subdir: ${hydra.job.num}
