@@ -29,13 +29,18 @@ class CIFAR10DataModule(LightningDataModule):
         self.num_workers = num_workers
         self.pin_memory = pin_memory
 
-        self.transforms = transforms.Compose([
+        normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
+                                         std=[0.229, 0.224, 0.225])
+
+        self.train_transforms = transforms.Compose([
+            transforms.Pad(4),
+            transforms.RandomHorizontalFlip(),
+            transforms.RandomCrop(32),
             transforms.ToTensor(),
-            transforms.Normalize(
-                mean=[x / 255.0 for x in [125.3, 123.0, 113.9]],
-                std=[x / 255.0 for x in [63.0, 62.1, 66.7]]
-            )
+            normalize
         ])
+
+        self.test_transforms = transforms.Compose([transforms.ToTensor(), normalize])
 
         self.dims = (3, 32, 32)
         self.data_train: Optional[Dataset] = None
@@ -49,6 +54,7 @@ class CIFAR10DataModule(LightningDataModule):
 
         CIFAR10(self.data_dir, train=True, download=True)
         CIFAR10(self.data_dir, train=False, download=True)
+        CorruptionDataloader(CIFAR10(self.data_dir, train=False), 'CIFAR', self.test_transforms)
 
     def setup(self, stage: Optional[str] = None):
         """
@@ -56,15 +62,14 @@ class CIFAR10DataModule(LightningDataModule):
         """
 
         trainset = CIFAR10(self.data_dir, train=True,
-                           transform=self.transforms)
+                           transform=self.train_transforms)
         testset = CIFAR10(self.data_dir, train=False,
-                          transform=self.transforms)
+                          transform=self.test_transforms)
 
-        self.data_train, self.data_val,  = random_split(
+        self.data_train, self.data_val, = random_split(
             trainset, self.train_val_split)
         self.data_test = testset
-        self.data_c_test = CorruptionDataloader(
-            CIFAR10(self.data_dir, train=False), 'CIFAR', self.transforms)
+        self.data_c_test = CorruptionDataloader(CIFAR10(self.data_dir, train=False), 'CIFAR', self.test_transforms)
 
     def train_dataloader(self):
         return DataLoader(

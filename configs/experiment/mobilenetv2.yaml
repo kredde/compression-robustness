@@ -9,7 +9,11 @@ defaults:
 seed: 42
 
 trainer:
+  min_epochs: 220
   max_epochs: null
+
+datamodule:
+  batch_size: 128
 
 logger:
   mlflow:
