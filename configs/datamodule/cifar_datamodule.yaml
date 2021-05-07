@@ -2,5 +2,5 @@ _target_: src.datamodules.cifar10.CIFAR10DataModule
 
 data_dir: ${data_dir}
 batch_size: 64
-num_workers: 10
+num_workers: 48
 pin_memory: False

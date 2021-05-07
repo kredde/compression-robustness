@@ -54,7 +54,6 @@ class CIFAR10DataModule(LightningDataModule):
 
         CIFAR10(self.data_dir, train=True, download=True)
         CIFAR10(self.data_dir, train=False, download=True)
-        CorruptionDataloader(CIFAR10(self.data_dir, train=False), 'CIFAR', self.test_transforms)
 
     def setup(self, stage: Optional[str] = None):
         """
@@ -69,7 +68,8 @@ class CIFAR10DataModule(LightningDataModule):
         self.data_train, self.data_val, = random_split(
             trainset, self.train_val_split)
         self.data_test = testset
-        self.data_c_test = CorruptionDataloader(CIFAR10(self.data_dir, train=False), 'CIFAR', self.test_transforms)
+
+        self.data_c_test = CIFAR10(self.data_dir, train=False)
 
     def train_dataloader(self):
         return DataLoader(
@@ -92,15 +92,6 @@ class CIFAR10DataModule(LightningDataModule):
     def test_dataloader(self):
         return DataLoader(
             dataset=self.data_test,
-            batch_size=self.batch_size,
-            num_workers=self.num_workers,
-            pin_memory=self.pin_memory,
-            shuffle=False,
-        )
-
-    def test_c_dataloader(self):
-        return DataLoader(
-            dataset=self.data_c_test,
             batch_size=self.batch_size,
             num_workers=self.num_workers,
             pin_memory=self.pin_memory,

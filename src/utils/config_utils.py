@@ -128,5 +128,7 @@ def empty(a):
 def format_result(result, prefix=None):
     d = {}
     for key in result[0].keys():
-        d[f'{prefix}_{key}' if prefix else key] = result[0][key]
+        # don't log loss results
+        if key != 'test/loss':
+            d[f'{prefix}_{key}' if prefix else key] = result[0][key]
     return d

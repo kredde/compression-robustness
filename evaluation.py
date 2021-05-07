@@ -18,7 +18,7 @@ def main(config: DictConfig):
     import mlflow
     from hydra import utils
     from src.eval import eval
-    from src.utils import model, config_utils
+    from src.utils import model as model_utils, config_utils
 
     config_utils.extras(config)
 
@@ -35,9 +35,9 @@ def main(config: DictConfig):
             '`exp_id` must be defined in order to evaluate an existing experiment')
 
     # load the saved model and datamodule
-    if  not log_dir.startswith('/'):
+    if not log_dir.startswith('/'):
         log_dir = utils.get_original_cwd() + '/' + log_dir
-    model, datamodule, exp_config = model.load_experiment(log_dir)
+    model, datamodule, exp_config = model_utils.load_experiment(log_dir)
 
     # instanciate mlflow and the trainer for the evaluation
     mlf_logger = utils.instantiate(

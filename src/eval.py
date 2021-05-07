@@ -4,30 +4,20 @@ from typing import Optional
 
 from pytorch_lightning import LightningModule, LightningDataModule, Trainer
 from pytorch_lightning import seed_everything
+import torch
+import copy
 
 from omegaconf import DictConfig
-from pytorch_lightning.loggers.base import LightningLoggerBase
 
 from src.experiments.static_quantization import quantize_static
 from src.utils.quantization_util import get_model_size
+from src.utils.evaluation import test
 from src.utils import config_utils
 
 log = logging.getLogger(__name__)
 
 
-def test_model(model: LightningModule, trainer: Trainer, datamodule: LightningDataModule, logger: LightningLoggerBase, name: str = None):
-    test_result = trainer.test(model, test_dataloaders=[
-                               datamodule.test_dataloader()])
-    logger.log_metrics(config_utils.format_result(test_result, name))
-
-    c_result = trainer.test(model, test_dataloaders=[
-                            datamodule.test_c_dataloader()])
-    logger.log_metrics(config_utils.format_result(c_result, f'{name}_c' if name else 'c'))
-
-    return {'t': test_result[0], 'c': c_result}
-
-
-def eval(config: DictConfig, model: LightningModule, trainer: Trainer, datamodule: LightningDataModule) -> Optional[float]:
+def eval(config: DictConfig, model: LightningModule, trainer: Trainer, datamodule: LightningDataModule):
     """Contains the evaluation pipeline.
 
     Uses the configuration to execute the evaluation pipeline on a given model.
@@ -56,20 +46,21 @@ def eval(config: DictConfig, model: LightningModule, trainer: Trainer, datamodul
     logger = trainer.logger
     trainer.logger = None
 
-    # log test result before
-    result_b = test_model(model, trainer, datamodule, logger)
+    # log test result before applying quantization
+    result_b = test(model, datamodule, logger, config=config)
 
     # quantization
     if config.get('quantization'):
         log.info(f'Starting quantization: {config.quantization.type}')
 
         pre_q_size = get_model_size(model)
+        model.to(torch.device("cpu"))
+        q_model = copy.deepcopy(model)
 
         assert config.quantization.type in ['static']
         if config.quantization.type == 'static':
             q_model = quantize_static(
-                model, datamodule.train_dataloader(), **config.quantization)
+                q_model, datamodule.train_dataloader(), **config.quantization)
 
         log.info('Quantization finished')
-
-        result_a = test_model(q_model, trainer, datamodule, logger, 'q')
+        result_a = test(q_model, datamodule, logger, 'q', config)

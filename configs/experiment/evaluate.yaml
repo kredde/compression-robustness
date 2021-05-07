@@ -1,0 +1,26 @@
+# @package _global_
+
+defaults:
+  - override /quantization: static_quantization.yaml
+
+exp_id: 40c2862ddf934b42835f8fc21089e5be
+
+trainer:
+  gpus: 0
+
+logger:
+  mlflow:
+    tags:
+      type: quantization
+
+test:
+  corruptions:
+    severities:
+      - 1
+      - 2
+    corruptions:
+      - motion_blur
+      - jpeg_compression
+      - contrast
+      - brightness
+    folder_name: CIFAR10
