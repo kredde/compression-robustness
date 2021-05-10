@@ -5,12 +5,14 @@ from pytorch_lightning import LightningModule, LightningDataModule, Trainer
 from pytorch_lightning.loggers.base import LightningLoggerBase
 from tqdm import tqdm
 from omegaconf import DictConfig
+import numpy as np
 
 from src.utils.config_utils import format_result
 from src.datamodules.data.corruptions import SingleCurruptionDataloader
+from cai_robustness_metrics.metrics.safety_metrics import SafetyMetricsClassification
 
 
-def test_model(model: LightningDataModule, criterion: torch.nn.Module, data_loader: DataLoader) -> Dict:
+def test_model(model: LightningDataModule, criterion: torch.nn.Module, data_loader: DataLoader):
     """
         Test loop. Evaluates model on a given dataloader
         TODO: Add more metrics
@@ -19,6 +21,7 @@ def test_model(model: LightningDataModule, criterion: torch.nn.Module, data_load
     cpu = torch.device("cpu")
 
     accuracy = Accuracy()
+    safety = SafetyMetricsClassification(thresholds=np.array([0.5]))
     running_loss = 0
 
     with torch.no_grad():
@@ -30,12 +33,13 @@ def test_model(model: LightningDataModule, criterion: torch.nn.Module, data_load
             preds = torch.argmax(logits, dim=1)
 
             acc = accuracy(preds, target)
+            safety.update(preds.numpy(), target.numpy())
 
             running_loss += loss * image.size(0)
     acc = accuracy.compute().item()
     loss = (running_loss / len(data_loader.dataset)).item()
 
-    return [{'test/acc': acc, 'test/loss': loss}]
+    return [{'test/acc': acc, 'test/loss': loss, 'test/rer': safety.get_rer()[0], 'test/rar': safety.get_rar()[0]}]
 
 
 def test(model: LightningModule, datamodule: LightningDataModule,
