@@ -1,14 +1,8 @@
-"""
-  Taken from this repository:
-
-  https://github.com/ashleve/lightning-hydra-template/blob/main/src/utils/template_utils.py
-"""
-
 import logging
 import warnings
 from typing import List
 import os
-
+import numpy as np
 import pytorch_lightning as pl
 from omegaconf import DictConfig, OmegaConf
 
@@ -18,6 +12,8 @@ log = logging.getLogger(__name__)
 
 def extras(config: DictConfig) -> None:
     """
+      https://github.com/ashleve/lightning-hydra-template/blob/main/src/utils/template_utils.py
+
       Optional utilities controlled by the main config file:
         - disabling warnings
         - easier access to debug mode
@@ -75,7 +71,9 @@ def log_hyperparameters(
     callbacks: List[pl.Callback],
     logger: List[pl.loggers.LightningLoggerBase],
 ) -> None:
-    """This method controls which parameters from Hydra config are saved by Lightning loggers.
+    """
+    https://github.com/ashleve/lightning-hydra-template/blob/main/src/utils/template_utils.py
+    This method controls which parameters from Hydra config are saved by Lightning loggers.
     Additionaly saves:
         - sizes of train, val, test dataset
         - number of trainable model parameters

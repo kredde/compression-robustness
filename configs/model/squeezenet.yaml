@@ -1,0 +1,5 @@
+_target_: src.models.squeezenet.SqueezeNet
+
+lr: 0.01
+weight_decay: 0.0005
+num_classes: 10

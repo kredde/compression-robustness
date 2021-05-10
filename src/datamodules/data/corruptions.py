@@ -41,7 +41,6 @@ class SingleCurruptionDataloader(data.Dataset):
 
         self.data_file_name = folder / 'data.npy'
         self.targets_file_name = folder / 'targets.npy'
-        print(dataset)
         self.dataset = dataset
         self.transform = transform
 

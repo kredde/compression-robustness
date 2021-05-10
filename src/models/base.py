@@ -99,3 +99,6 @@ class BaseModel(LightningModule):
 
     def configure_optimizers(self):
         return torch.optim.Adam(params=self.parameters(), lr=self.hparams.lr, weight_decay=self.hparams.weight_decay)
+    
+    def fuse_model(self):
+        self.model.fuse_model()

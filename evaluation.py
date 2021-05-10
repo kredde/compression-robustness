@@ -41,7 +41,7 @@ def main(config: DictConfig):
 
     # instanciate mlflow and the trainer for the evaluation
     mlf_logger = utils.instantiate(
-        config.logger.mlflow, experiment_name=exp_config.logger.mlflow.experiment_name)
+        config.logger.mlflow, experiment_name=config.get('exp_name') or exp_config.logger.mlflow.experiment_name)
     trainer = utils.instantiate(
         config.trainer, callbacks=[], logger=[mlf_logger], _convert_='partial'
     )

@@ -1,0 +1,19 @@
+# @package _global_
+
+# to execute this experiment run:
+# python main.py +experiment=lenet
+defaults:
+  - override /model: lenet.yaml
+  - override /datamodule: cifar_datamodule.yaml
+
+seed: 42
+
+trainer:
+  max_epochs: null
+
+datamodule:
+  batch_size: 128
+
+logger:
+  mlflow:
+    experiment_name: "CIFAR_LENET"
