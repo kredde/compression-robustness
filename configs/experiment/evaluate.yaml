@@ -3,7 +3,9 @@
 defaults:
   - override /quantization: static_quantization.yaml
 
-exp_id: 40c2862ddf934b42835f8fc21089e5be
+exp_id: 8410bf53752a4cd8b4b569f39caf7730
+
+exp_name: null
 
 trainer:
   gpus: 0

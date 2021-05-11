@@ -2,6 +2,7 @@ import logging
 import dotenv
 import hydra
 from omegaconf import DictConfig
+import torch
 
 
 dotenv.load_dotenv(override=True)
@@ -21,6 +22,8 @@ def main(config: DictConfig):
     from src.utils import model as model_utils, config_utils
 
     config_utils.extras(config)
+
+    torch.set_num_threads(1)
 
     log_dir = None
     # get the hydra logdir using the exp_id
