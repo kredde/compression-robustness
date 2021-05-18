@@ -23,8 +23,6 @@ def main(config: DictConfig):
 
     config_utils.extras(config)
 
-    torch.set_num_threads(1)
-
     log_dir = None
     # get the hydra logdir using the exp_id
     if config.get('exp_id'):
@@ -40,7 +38,7 @@ def main(config: DictConfig):
     # load the saved model and datamodule
     if not log_dir.startswith('/'):
         log_dir = utils.get_original_cwd() + '/' + log_dir
-    model, datamodule, exp_config = model_utils.load_experiment(log_dir)
+    model, datamodule, exp_config = model_utils.load_experiment(log_dir, checkpoint="best")
 
     # instanciate mlflow and the trainer for the evaluation
     mlf_logger = utils.instantiate(

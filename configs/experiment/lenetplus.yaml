@@ -1,9 +1,9 @@
 # @package _global_
 
 # to execute this experiment run:
-# python main.py +experiment=mobilenetv2
+# python main.py +experiment=lenetplus
 defaults:
-  - override /model: mobilenetv2.yaml
+  - override /model: lenet.yaml
   - override /datamodule: cifar_datamodule.yaml
 
 seed: 42
@@ -11,9 +11,12 @@ seed: 42
 trainer:
   max_epochs: null
 
+model:
+  _target_: src.models.lenetplus.LeNetPlus
+
 datamodule:
   batch_size: 128
 
 logger:
   mlflow:
-    experiment_name: "CIFAR_MOBILEV2"
+    experiment_name: "CIFAR_LENET+"

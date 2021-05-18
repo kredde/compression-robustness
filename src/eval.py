@@ -42,25 +42,27 @@ def eval(config: DictConfig, model: LightningModule, trainer: Trainer, datamodul
         callbacks=[],
         logger=trainer.logger,
     )
+    cpu = torch.device("cpu")
 
     logger = trainer.logger
     trainer.logger = None
+    model.eval()
 
     # log test result before applying quantization
-    result_b = test(model, datamodule, logger, config=config)
+    # test(model, datamodule, logger, config=config)
 
     # quantization
     if config.get('quantization'):
         log.info(f'Starting quantization: {config.quantization.type}')
 
-        pre_q_size = get_model_size(model)
-        model.to(torch.device("cpu"))
-        q_model = copy.deepcopy(model)
+        # pre_q_size = get_model_size(model)
+        model.to(cpu)
 
         assert config.quantization.type in ['static']
         if config.quantization.type == 'static':
-            q_model = quantize_static(
-                q_model, datamodule.train_dataloader(), **config.quantization)
+            q_model = quantize_static(model, datamodule.train_dataloader(), **config.quantization)
 
         log.info('Quantization finished')
-        result_a = test(q_model, datamodule, logger, 'q', config)
+        test(q_model, datamodule, logger, 'q', config)
+
+    logger.finalize(status="FINISHED")

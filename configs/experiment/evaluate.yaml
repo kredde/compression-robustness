@@ -3,7 +3,7 @@
 defaults:
   - override /quantization: static_quantization.yaml
 
-exp_id: 8410bf53752a4cd8b4b569f39caf7730
+exp_id: 77cfa9c0651d4fe694a5e38898e464c4
 
 exp_name: null
 
