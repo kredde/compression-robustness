@@ -6,6 +6,7 @@ from pytorch_lightning.loggers.base import LightningLoggerBase
 from tqdm import tqdm
 from omegaconf import DictConfig
 import numpy as np
+import pandas as pd
 
 from src.utils.config_utils import format_result
 from src.datamodules.data.corruptions import SingleCurruptionDataloader
@@ -21,8 +22,9 @@ def test_model(model: LightningDataModule, criterion: torch.nn.Module, data_load
     cpu = torch.device("cpu")
 
     accuracy = Accuracy()
-    safety = SafetyMetricsClassification(thresholds=np.array([0.5]))
     running_loss = 0
+    predictions = np.array([])
+    targets = np.array([])
 
     with torch.no_grad():
         for image, target in tqdm(data_loader):
@@ -32,14 +34,20 @@ def test_model(model: LightningDataModule, criterion: torch.nn.Module, data_load
             loss = criterion(logits, target)
             preds = torch.argmax(logits, dim=1)
 
+            predictions = np.concatenate((predictions, preds.numpy()))
+            targets = np.concatenate((targets, target.numpy()))
+
             acc = accuracy(preds, target)
-            safety.update(preds.numpy(), target.numpy())
 
             running_loss += loss * image.size(0)
     acc = accuracy.compute().item()
     loss = (running_loss / len(data_loader.dataset)).item()
 
-    return [{'test/acc': acc, 'test/loss': loss, 'test/rer': safety.get_rer()[0], 'test/rar': safety.get_rar()[0]}]
+    pred_df = pd.DataFrame()
+    pred_df['predictions'] = predictions
+    pred_df['targets'] = targets
+
+    return [{'test/acc': acc, 'test/loss': loss}], pred_df
 
 
 def test(model: LightningModule, datamodule: LightningDataModule,
@@ -50,8 +58,9 @@ def test(model: LightningModule, datamodule: LightningDataModule,
     """
 
     test_dataloader = datamodule.test_dataloader()
-    test_result = test_model(model, model.criterion, test_dataloader)
+    test_result, predictions = test_model(model, model.criterion, test_dataloader)
     logger.log_metrics(format_result(test_result, name))
+    predictions.to_csv(f"{config.get('log_dir')}/{f'{name}_' if name else ''}preds.csv")
 
     if config.get('test'):
         c_config = config.test.corruptions
@@ -74,9 +83,10 @@ def test(model: LightningModule, datamodule: LightningDataModule,
                     shuffle=False,
                 )
 
-                c_result = test_model(model, model.criterion, dataloader)
+                c_result, c_predictions = test_model(model, model.criterion, dataloader)
                 sum_acc += c_result[0]['test/acc']
                 logger.log_metrics(format_result(c_result, f'{name}_{c}_{str(s)}' if name else f'{c}_{str(s)}'))
+                c_predictions.to_csv(f"{config.get('log_dir')}/{f'{name}_' if name else ''}{c}_{str(s)}_preds.csv")
 
         acc = sum_acc / (len(c_config.corruptions) * len(c_config.severities))
         logger.log_metrics({f'{name}_c_test/acc' if name else 'c_test/acc': acc})

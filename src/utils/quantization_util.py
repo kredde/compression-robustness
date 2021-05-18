@@ -12,10 +12,14 @@ def calibrate_model(model, criterion, data_loader, neval_batches):
         Calibrates a given model with a given number of batches
     """
     model.eval()
+    cpu = torch.device("cpu")
+    
     cnt = 0
 
     with torch.no_grad():
         for image, target in data_loader:
+            image = image.to(cpu)
+            target = target.to(cpu)
             output = model(image)
             loss = criterion(output, target)
             cnt += 1
