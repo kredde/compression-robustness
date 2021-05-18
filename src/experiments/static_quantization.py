@@ -1,12 +1,13 @@
 from pytorch_lightning import LightningModule
 import torch
-from torch.quantization.observer import MovingAverageMinMaxObserver
+from torch.quantization.observer import MovingAverageMinMaxObserver, MovingAveragePerChannelMinMaxObserver
 from torch.utils.data.dataloader import DataLoader
 
 from src.utils import quantization_util as utils
 
 
-def quantize_static(model: LightningModule, dataloader: DataLoader, num_calibration_batches: int = 32, activation_precision: int = 7, weight_precision: int = 8, *args, **kwargs):
+def quantize_static(model: LightningModule, dataloader: DataLoader, num_calibration_batches: int = 32,
+                    activation_precision: int = 7, weight_precision: int = 8, *args, **kwargs):
     """
       Performs static post training quantization on a given model
       https://pytorch.org/tutorials/advanced/static_quantization_tutorial.html#post-training-static-quantization
@@ -42,10 +43,11 @@ def quantize_static(model: LightningModule, dataloader: DataLoader, num_calibrat
             quant_max=activation_precision[1],
             qscheme=torch.per_tensor_affine
         ),
-        weight=MovingAverageMinMaxObserver.with_args(
-            dtype=torch.qint8, quant_min=weight_precision[0],
+        weight=MovingAveragePerChannelMinMaxObserver.with_args(
+            dtype=torch.qint8,
+            quant_min=weight_precision[0],
             quant_max=weight_precision[1],
-            qscheme=torch.per_tensor_affine
+            qscheme=torch.per_channel_affine
         )
     )
 
