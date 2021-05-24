@@ -116,7 +116,8 @@ def log_hyperparameters(
 
     # disable logging any more hyperparameters for all loggers
     # (this is just a trick to prevent trainer from logging hparams of model, since we already did that above)
-    trainer.logger.log_hyperparams = empty
+    if not 'test' in config.keys():
+        trainer.logger.log_hyperparams = empty
 
 
 def empty(a):

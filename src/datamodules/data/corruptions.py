@@ -26,7 +26,7 @@ class SingleCurruptionDataloader(data.Dataset):
     """
 
     def __init__(self, dataset: data.Dataset, corruption: str, severity: int,
-                 folder_name: str, transform: Optional[Callable] = None):
+                 folder_name: str, transform: Optional[Callable] = None, dataset_path: str = None):
 
         super().__init__()
 
@@ -35,7 +35,7 @@ class SingleCurruptionDataloader(data.Dataset):
         self.corruption = corruption
         self.severity = severity
 
-        base_folder = pathlib.Path(dataset.root) / folder_name
+        base_folder = pathlib.Path(dataset_path or dataset.root) / folder_name
         folder = base_folder / 'corrupted' / corruption / str(severity)
         os.makedirs(folder, exist_ok=True)
 
