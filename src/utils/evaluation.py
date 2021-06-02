@@ -7,12 +7,11 @@ from tqdm import tqdm
 from omegaconf import DictConfig
 import numpy as np
 import pandas as pd
-import uuid
-from pathlib import Path
+
+from hydra.utils import instantiate
 
 from src.utils.config_utils import format_result
 from src.datamodules.data.corruptions import SingleCurruptionDataloader
-from cai_robustness_metrics.metrics.safety_metrics import SafetyMetricsClassification
 
 
 def test_model(model: LightningDataModule, criterion: torch.nn.Module, data_loader: DataLoader):
@@ -52,14 +51,10 @@ def test_model(model: LightningDataModule, criterion: torch.nn.Module, data_load
 
 def test(model: LightningModule, datamodule: LightningDataModule,
          logger: LightningLoggerBase, name: str = None,
-         config: DictConfig = None):
+         config: DictConfig = None, path: str = None):
     """
         Test pipeline. Executes the test config for a given model
     """
-
-    path = f"{config.get('log_dir')}/{uuid.uuid4()}"
-    logger.log_hyperparams({'csv_path': path})
-    Path(path).mkdir(parents=True, exist_ok=True)
 
     test_dataloader = datamodule.test_dataloader()
     test_result, predictions = test_model(model, model.criterion, test_dataloader)
@@ -67,34 +62,45 @@ def test(model: LightningModule, datamodule: LightningDataModule,
     predictions.to_csv(f"{path}/{f'{name}_' if name else ''}preds.csv", index=False)
 
     if config.get('test'):
-        c_config = config.test.corruptions
+        if config.test.get('corruptions'):
+            c_config = config.test.corruptions
 
-        sum_acc = 0
-        for s in c_config.severities:
-            for c in c_config.corruptions:
-                dataset = SingleCurruptionDataloader(
-                    datamodule.data_c_test,
-                    c,
-                    s,
-                    c_config.folder_name,
-                    transform=datamodule.test_transforms,
-                    dataset_path=c_config.dataset_path)
+            sum_acc = 0
+            for s in c_config.severities:
+                for c in c_config.corruptions:
+                    dataset = SingleCurruptionDataloader(
+                        datamodule.data_c_test,
+                        c,
+                        s,
+                        c_config.folder_name,
+                        transform=datamodule.test_transforms,
+                        dataset_path=c_config.dataset_path)
 
-                dataloader = DataLoader(
-                    dataset=dataset,
-                    batch_size=datamodule.batch_size,
-                    num_workers=datamodule.num_workers,
-                    pin_memory=datamodule.pin_memory,
-                    shuffle=False,
-                )
+                    dataloader = DataLoader(
+                        dataset=dataset,
+                        batch_size=datamodule.batch_size,
+                        num_workers=datamodule.num_workers,
+                        pin_memory=datamodule.pin_memory,
+                        shuffle=False,
+                    )
 
-                c_result, c_predictions = test_model(model, model.criterion, dataloader)
-                sum_acc += c_result[0]['test/acc']
-                logger.log_metrics(format_result(c_result, f'{name}_{c}_{str(s)}' if name else f'{c}_{str(s)}'))
-                c_predictions.to_csv(f"{path}/{f'{name}_' if name else ''}{c}_{str(s)}_preds.csv", index=False)
+                    c_result, c_predictions = test_model(model, model.criterion, dataloader)
+                    sum_acc += c_result[0]['test/acc']
+                    logger.log_metrics(format_result(c_result, f'{name}_{c}_{str(s)}' if name else f'{c}_{str(s)}'))
+                    c_predictions.to_csv(f"{path}/{f'{name}_' if name else ''}{c}_{str(s)}_preds.csv", index=False)
 
-        acc = sum_acc / (len(c_config.corruptions) * len(c_config.severities))
-        logger.log_metrics({f'{name}_c_test/acc' if name else 'c_test/acc': acc})
+            acc = sum_acc / (len(c_config.corruptions) * len(c_config.severities))
+            logger.log_metrics({f'{name}_c_test/acc' if name else 'c_test/acc': acc})
+
+        if config.test.get('ood'):
+            ood_datamodule = instantiate(config.ood)
+            ood_datamodule.prepare_data()
+            ood_datamodule.setup()
+            ood_test = ood_datamodule.test_dataloader()
+
+            ood_result, ood_predictions = test_model(model, model.criterion, ood_test)
+            logger.log_metrics(format_result(ood_result, f'{name}_ood' if name else 'ood'))
+            ood_predictions.to_csv(f"{path}/{f'{name}_' if name else ''}ood_preds.csv", index=False)
 
     # TODO: return metrics
     return None

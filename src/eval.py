@@ -6,6 +6,8 @@ from pytorch_lightning import LightningModule, LightningDataModule, Trainer
 from pytorch_lightning import seed_everything
 import torch
 import copy
+import uuid
+from pathlib import Path
 
 from omegaconf import DictConfig
 
@@ -48,8 +50,13 @@ def eval(config: DictConfig, model: LightningModule, trainer: Trainer, datamodul
     trainer.logger = None
     model.eval()
 
+    # log path of csv files
+    path = f"{config.get('log_dir')}/{uuid.uuid4()}"
+    logger.log_hyperparams({'csv_path': path})
+    Path(path).mkdir(parents=True, exist_ok=True)
+
     # log test result before applying quantization
-    # test(model, datamodule, logger, config=config)
+    # test(model, datamodule, logger, config=config, path=path)
 
     # quantization
     if config.get('quantization'):
@@ -63,6 +70,6 @@ def eval(config: DictConfig, model: LightningModule, trainer: Trainer, datamodul
             q_model = quantize_static(model, datamodule.train_dataloader(), **config.quantization)
 
         log.info('Quantization finished')
-        test(q_model, datamodule, logger, 'q', config)
+        test(q_model, datamodule, logger, 'q', config, path=path)
 
     logger.finalize(status="FINISHED")

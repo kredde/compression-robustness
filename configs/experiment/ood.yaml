@@ -1,0 +1,20 @@
+# @package _global_
+
+defaults:
+  - override /quantization: static_quantization.yaml
+  - override /ood: svhn_datamodule.yaml
+
+exp_id: 40c2862ddf934b42835f8fc21089e5be
+
+exp_name: CIFAR_RESNET18_EVAL
+
+trainer:
+  gpus: 0
+
+logger:
+  mlflow:
+    tags:
+      type: ood
+
+test:
+  ood: true

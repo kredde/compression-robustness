@@ -5,6 +5,7 @@ defaults:
   - logger: mlflow.yaml
   - trainer: default_trainer.yaml
   - quantization: null
+  - ood: null
 
 logger:
   mlflow:

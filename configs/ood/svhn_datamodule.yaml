@@ -1,0 +1,6 @@
+_target_: src.datamodules.svhn.SVHNDataModule
+
+data_dir: ${data_dir}
+batch_size: 64
+num_workers: 48
+pin_memory: False
