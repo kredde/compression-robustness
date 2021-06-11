@@ -1,0 +1,30 @@
+# @package _global_
+
+defaults:
+  - override /pruning: unstructured_l1.yaml
+
+exp_id: "40c2862ddf934b42835f8fc21089e5be"
+
+exp_name: null
+
+gpu_id: "3"
+
+logger:
+  mlflow:
+    tags:
+      type: pruning
+      pruning_method: "unstructured_l1"
+
+test:
+  corruptions:
+    severities:
+      - 1
+      - 2
+    corruptions:
+      - motion_blur
+      # - jpeg_compression
+      # - contrast
+      # - brightness
+      - gaussian_blur
+    folder_name: CIFAR10
+    dataset_path: null

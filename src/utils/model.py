@@ -4,7 +4,7 @@ from omegaconf import DictConfig, OmegaConf
 import os
 
 
-def load_experiment(path: str, checkpoint: str = 'last.ckpt'):
+def load_experiment(path: str, checkpoint: str = 'last.ckpt', compressed_path: str = None):
     """
       Loads an existing model and its dataloader.
 
@@ -23,13 +23,17 @@ def load_experiment(path: str, checkpoint: str = 'last.ckpt'):
     if "seed" in config:
         seed_everything(config.seed)
 
-    # find best checkpoint
-    if checkpoint == 'best':
-        files = os.listdir(path + '/checkpoints')
-        for f in files:
-            if f.startswith('epoch='):
-                checkpoint = f
+    if compressed_path:
+        path = compressed_path
+    else:
+        # find best checkpoint
+        if checkpoint == 'best':
+            files = os.listdir(path + '/checkpoints')
+            for f in files:
+                if f.startswith('epoch='):
+                    checkpoint = f
+        path += '/checkpoints/' + checkpoint
 
-    model = model.load_from_checkpoint(path + '/checkpoints/' + checkpoint)
+    model = model.load_from_checkpoint(path)
 
     return model, datamodule, config

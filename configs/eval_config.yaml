@@ -6,6 +6,7 @@ defaults:
   - trainer: default_trainer.yaml
   - quantization: null
   - ood: null
+  - pruning: null
 
 logger:
   mlflow:

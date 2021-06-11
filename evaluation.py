@@ -38,7 +38,8 @@ def main(config: DictConfig):
     # load the saved model and datamodule
     if not log_dir.startswith('/'):
         log_dir = utils.get_original_cwd() + '/' + log_dir
-    model, datamodule, exp_config = model_utils.load_experiment(log_dir, checkpoint="best")
+    model, datamodule, exp_config = model_utils.load_experiment(
+        log_dir, checkpoint="best", compressed_path=config.get('compressed_path'))
 
     # instanciate mlflow and the trainer for the evaluation
     mlf_logger = utils.instantiate(

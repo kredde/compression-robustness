@@ -1,0 +1,6 @@
+type: unstructured
+method: l1_unstructured
+amount: 0.5
+iterations: 5
+fine_tuning_epochs: 5
+strategy_conf:

@@ -1,0 +1,7 @@
+type: structured
+method: random_structured
+amount: 0.5
+iterations: 4
+fine_tuning_epochs: 5
+strategy_conf:
+  dim: 0

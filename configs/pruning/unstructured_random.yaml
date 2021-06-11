@@ -1,0 +1,6 @@
+type: unstructured
+method: random_unstructured
+amount: 0.5
+iterations: 4
+fine_tuning_epochs: 10
+strategy_conf:

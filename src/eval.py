@@ -12,6 +12,7 @@ from pathlib import Path
 from omegaconf import DictConfig
 
 from src.experiments.static_quantization import quantize_static
+from src.experiments.pruning import prune
 from src.utils.quantization_util import get_model_size
 from src.utils.evaluation import test
 from src.utils import config_utils
@@ -58,11 +59,19 @@ def eval(config: DictConfig, model: LightningModule, trainer: Trainer, datamodul
     # log test result before applying quantization
     # test(model, datamodule, logger, config=config, path=path)
 
+    if config.get('pruning'):
+        log.info(f'Starting pruning: {config.pruning.method}')
+
+        prune(model, datamodule, config.pruning, logger, path=path)
+
+        log.info('Pruning finished')
+        test(model, datamodule, logger, f'p', config, path=path)
+
     # quantization
     if config.get('quantization'):
         log.info(f'Starting quantization: {config.quantization.type}')
 
-        # pre_q_size = get_model_size(model)
+        pre_q_size = get_model_size(model)
         model.to(cpu)
 
         assert config.quantization.type in ['static']
@@ -70,6 +79,8 @@ def eval(config: DictConfig, model: LightningModule, trainer: Trainer, datamodul
             q_model = quantize_static(model, datamodule.train_dataloader(), **config.quantization)
 
         log.info('Quantization finished')
+        q_size = get_model_size(q_model)
+        log.info(f"model size: {q_size}, before: {pre_q_size}")
         test(q_model, datamodule, logger, 'q', config, path=path)
 
     logger.finalize(status="FINISHED")

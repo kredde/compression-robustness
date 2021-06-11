@@ -1,0 +1,8 @@
+type: structured
+method: l1_structured
+amount: 0.5
+iterations: 4
+fine_tuning_epochs: 10
+strategy_conf:
+  n: 1
+  dim: 0
