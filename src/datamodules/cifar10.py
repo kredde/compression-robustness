@@ -38,7 +38,6 @@ class CIFAR10DataModule(LightningDataModule):
             transforms.RandomCrop(32),
             transforms.ToTensor(),
             normalize,
-            # transforms.RandomErasing(scale=(0.03, 0.125)) # 1-4 px
         ])
 
         self.test_transforms = transforms.Compose([transforms.ToTensor(), normalize])

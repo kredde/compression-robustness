@@ -21,7 +21,7 @@ log_dir: /data/logs/kristian/runs/${logger.mlflow.experiment_name}/${now:%H-%M-%
 # this will run 1 train, val and test loop with only 1 batch
 debug: False
 
-gpu_id: "2"
+gpu_id: "1"
 
 disable_warnings: True
 

@@ -1,0 +1,21 @@
+# @package _global_
+
+exp_id: 2322cbf079bf4072a7ca40d3710b7575
+
+gpu_id: "3"
+
+logger:
+  mlflow:
+    tags:
+      type: eval
+
+test:
+  corruptions:
+    severities:
+      - 1
+      - 2
+    corruptions:
+      - motion_blur
+      - gaussian_blur
+    folder_name: CIFAR10
+    dataset_path: null
