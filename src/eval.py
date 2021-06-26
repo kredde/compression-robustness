@@ -8,7 +8,6 @@ import torch
 import copy
 import uuid
 from pathlib import Path
-
 from omegaconf import DictConfig
 
 from src.experiments.static_quantization import quantize_static
@@ -20,7 +19,8 @@ from src.utils import config_utils
 log = logging.getLogger(__name__)
 
 
-def eval(config: DictConfig, model: LightningModule, trainer: Trainer, datamodule: LightningDataModule):
+def eval(config: DictConfig, model: LightningModule,
+         trainer: Trainer, datamodule: LightningDataModule):
     """Contains the evaluation pipeline.
 
     Uses the configuration to execute the evaluation pipeline on a given model.
@@ -56,8 +56,15 @@ def eval(config: DictConfig, model: LightningModule, trainer: Trainer, datamodul
     logger.log_hyperparams({'csv_path': path})
     Path(path).mkdir(parents=True, exist_ok=True)
 
+    # if config.get('ensemble'):
+    #     # save ensemble checkpoint
+    #     model_path = f"{path}/model.ckpt"
+    #     logger.log_hyperparams({f'model_path': model_path})
+    #     trainer.accelerator.model = model
+    #     trainer.save_checkpoint(model_path)
+
     # log test result before applying quantization
-    # test(model, datamodule, logger, config=config, path=path)
+    #test(model, datamodule, logger, config=config, path=path)
 
     if config.get('pruning'):
         log.info(f'Starting pruning: {config.pruning.method}')

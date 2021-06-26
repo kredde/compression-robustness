@@ -102,6 +102,8 @@ def log_hyperparameters(
         hparams["quantization"] = config["quantization"]
     if "pruning" in config:
         hparams["pruning"] = config["pruning"]
+    if "ensemble" in config:
+        hparams["ensemble"] = config["ensemble"]
 
     # save number of model parameters
     hparams["model/params_total"] = sum(p.numel() for p in model.parameters())

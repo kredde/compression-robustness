@@ -25,7 +25,10 @@ def prune_model(model: LightningModule, config: DictConfig):
     """
         Applies a pruning strategy to a model
     """
-    modules = get_prunable_modules(model.model)
+    if hasattr(model, 'model'):
+        modules = get_prunable_modules(model.model)
+    else:
+        modules = get_prunable_modules(model)
 
     for module in modules:
         strategy = strategies[config.method]
@@ -39,7 +42,10 @@ def remove_pruning(model: LightningDataModule):
     """
         Removes the pruning weights and makes the pruning non-reversible
     """
-    modules = get_prunable_modules(model.model)
+    if hasattr(model, 'model'):
+        modules = get_prunable_modules(model.model)
+    else:
+        modules = get_prunable_modules(model)
 
     for module in modules:
         torch.nn.utils.prune.remove(module, "weight")

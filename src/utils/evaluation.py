@@ -14,7 +14,7 @@ from src.utils.config_utils import format_result
 from src.datamodules.data.corruptions import SingleCurruptionDataloader
 
 
-def test_model(model: LightningDataModule, criterion: torch.nn.Module, data_loader: DataLoader):
+def test_model(model: LightningModule, criterion: torch.nn.Module, data_loader: DataLoader):
     """
         Test loop. Evaluates model on a given dataloader
         TODO: Add more metrics

@@ -19,27 +19,27 @@ def main(config: DictConfig):
     import mlflow
     from hydra import utils
     from src.eval import eval
-    from src.utils import model as model_utils, config_utils
+    from src.utils import model as model_utils, config_utils, ensemble_utils
 
     config_utils.extras(config)
 
-    log_dir = None
     # get the hydra logdir using the exp_id
     if config.get('exp_id'):
-        client = mlflow.tracking.MlflowClient(
-            tracking_uri=config.logger.mlflow.tracking_uri)
-        data = client.get_run(config.get('exp_id')).to_dictionary()
-        log_dir: str = data['data']['params']['hydra/log_dir']
+        model, datamodule, exp_config = model_utils.load_exprerimant_by_id(config.exp_id, config)
+    elif config.get('ensemble_models'):
+        models = []
+        datamodule = None
+        exp_config = None
+        for exp_id in config.ensemble_models:
+            m, datamodule, exp_config = model_utils.load_exprerimant_by_id(exp_id, config)
+            models.append(m)
+
+        model = utils.instantiate(config.ensemble, models=models)
+
     else:
         # TODO: Find a easier way to load a past configuration
         raise Exception(
-            '`exp_id` must be defined in order to evaluate an existing experiment')
-
-    # load the saved model and datamodule
-    if not log_dir.startswith('/'):
-        log_dir = utils.get_original_cwd() + '/' + log_dir
-    model, datamodule, exp_config = model_utils.load_experiment(
-        log_dir, checkpoint="best", compressed_path=config.get('compressed_path'))
+            '`exp_id` or `ensemble_models` must be defined in order to evaluate an existing experiment')
 
     # instanciate mlflow and the trainer for the evaluation
     mlf_logger = utils.instantiate(
@@ -47,6 +47,9 @@ def main(config: DictConfig):
     trainer = utils.instantiate(
         config.trainer, callbacks=[], logger=[mlf_logger], _convert_='partial'
     )
+
+    if hasattr(model, 'requires_fit') and model.requires_fit:
+        ensemble_utils.fit_meta(model, trainer, datamodule)
 
     return eval(config, model, trainer, datamodule)
 

@@ -1,0 +1,3 @@
+_target_: src.models.ensemble.StackingEnsemble
+lr: 0.001
+weight_decay: 0.0005

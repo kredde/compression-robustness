@@ -7,6 +7,8 @@ defaults:
   - quantization: null
   - ood: null
   - pruning: null
+  - ensemble: null
+  - datamodule: null
 
 logger:
   mlflow:
