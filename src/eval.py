@@ -64,7 +64,7 @@ def eval(config: DictConfig, model: LightningModule,
     #     trainer.save_checkpoint(model_path)
 
     # log test result before applying quantization
-    #test(model, datamodule, logger, config=config, path=path)
+    test(model, datamodule, logger, config=config, path=path)
 
     if config.get('pruning'):
         log.info(f'Starting pruning: {config.pruning.method}')
