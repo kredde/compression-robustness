@@ -1,0 +1,7 @@
+_target_: src.datamodules.gtsrb.GTSRBDataModule
+
+data_dir: /data/datasets/gtsrb/converted
+batch_size: 64
+num_workers: 48
+pin_memory: False
+img_dim: 32

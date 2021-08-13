@@ -48,7 +48,8 @@ class LeNetModule(nn.Module):
 
 
 class LeNet(BaseModel):
-    def __init__(self, lr: float = 0.1, weight_decay: float = 5e-4, num_classes: int = 10, *args, **kwargs):
+    def __init__(self, lr: float = 0.1, weight_decay: float = 5e-4,
+                 num_classes: int = 10, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.model = LeNetModule(num_classes)

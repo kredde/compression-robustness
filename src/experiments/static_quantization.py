@@ -53,13 +53,13 @@ def quantize_static(model: LightningModule, dataloader: DataLoader, num_calibrat
 
     print(model.qconfig)
 
-    model = torch.quantization.prepare(model, inplace=False)
+    q_model = torch.quantization.prepare(model, inplace=False)
 
     # Calibrate with the training set
-    utils.calibrate_model(model, model.criterion, dataloader,
+    utils.calibrate_model(q_model, q_model.criterion, dataloader,
                           neval_batches=num_calibration_batches)
 
     # convert model
-    torch.quantization.convert(model, inplace=True)
+    torch.quantization.convert(q_model, inplace=True)
 
-    return model
+    return q_model

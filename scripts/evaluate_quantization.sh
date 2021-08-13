@@ -1,15 +1,15 @@
 # lenet
-python3 evaluation.py -m +experiment=evaluate quantization.activation_precision=2,3,4,5,6 exp_id=77cfa9c0651d4fe694a5e38898e464c4
-python3 evaluation.py -m +experiment=evaluate quantization.weight_precision=2,3,4,5,6,7,8 exp_id=77cfa9c0651d4fe694a5e38898e464c4
+python3 evaluation.py -m +experiment=quantization quantization.activation_precision=2,3,4,5,6 exp_id=8a56616d6d324f3a8f4879402ac1ab59
+python3 evaluation.py -m +experiment=quantization quantization.weight_precision=2,3,4,5,6,7,8 exp_id=8a56616d6d324f3a8f4879402ac1ab59
 
 # squeeze
-# python3 evaluation.py -m +experiment=evaluate quantization.activation_precision=2,3,4,5,6 exp_name=CIFAR_SQUEEZE_EVAL exp_id=2322cbf079bf4072a7ca40d3710b7575
-# python3 evaluation.py -m +experiment=evaluate  quantization.weight_precision=2,3,4,5,6,7,8 exp_name=CIFAR_SQUEEZE_EVAL exp_id=2322cbf079bf4072a7ca40d3710b7575
+python3 evaluation.py -m +experiment=quantization quantization.activation_precision=2,3,4,5,6 exp_id=3aa717da42a94f9ea3b40457abc87cd1
+python3 evaluation.py -m +experiment=quantization  quantization.weight_precision=2,3,4,5,6,7,8 exp_id=3aa717da42a94f9ea3b40457abc87cd1
 
-# # resnet
-# python3 evaluation.py -m +experiment=evaluate quantization.activation_precision=2,3,4,5,6 exp_name=CIFAR_RESNET18_EVAL exp_id=40c2862ddf934b42835f8fc21089e5be
-# python3 evaluation.py -m +experiment=evaluate  quantization.weight_precision=2,3,4,5,6,7,8 exp_name=CIFAR_RESNET18_EVAL exp_id=40c2862ddf934b42835f8fc21089e5be
+# resnet
+python3 evaluation.py -m +experiment=quantization quantization.activation_precision=2,3,4,5,6 exp_id=84bf62bc2d744a3da2835f6a143596f3
+python3 evaluation.py -m +experiment=quantization  quantization.weight_precision=2,3,4,5,6,7,8 exp_id=84bf62bc2d744a3da2835f6a143596f3
 
 # leplus
-python3 evaluation.py -m +experiment=evaluate quantization.activation_precision=2,3,4,5,6 exp_id=99c9ed56ad094470a2f759be807495af
-python3 evaluation.py -m +experiment=evaluate  quantization.weight_precision=2,3,4,5,6,7,8 exp_id=99c9ed56ad094470a2f759be807495af
+python3 evaluation.py -m +experiment=quantization quantization.activation_precision=2,3,4,5,6 exp_id=8ff2305eb55949ad95f0c6251527a08a
+python3 evaluation.py -m +experiment=quantization  quantization.weight_precision=2,3,4,5,6,7,8 exp_id=8ff2305eb55949ad95f0c6251527a08a
