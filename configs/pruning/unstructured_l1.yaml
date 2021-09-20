@@ -2,5 +2,5 @@ type: unstructured
 method: l1_unstructured
 amount: 0.5
 iterations: 2
-fine_tuning_epochs: 1
+fine_tuning_epochs: 5
 strategy_conf:

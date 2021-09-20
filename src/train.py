@@ -59,6 +59,8 @@ def train(config: DictConfig) -> Optional[float]:
         config.trainer, callbacks=callbacks, logger=logger, _convert_='partial'
     )
 
+    # trainer.tune(model=model, datamodule=datamodule)
+
     # Send some parameters from config to all lightning loggers
     log.info('Logging hyperparameters!')
     config_utils.log_hyperparameters(
