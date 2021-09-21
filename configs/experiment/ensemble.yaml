@@ -1,13 +1,20 @@
 # @package _global_
 
+# to execute this experiment run:
+# python main.py +experiment=ensemble
+
 defaults:
+  # type of ensemble
   - override /ensemble: bagging_ensemble.yaml
   - override /datamodule: cifar_datamodule.yaml
-  - override /quantization: static_quantization.yaml
   - override /ood: svhn_datamodule.yaml
+
+  # Add compression
+  # - override /quantization: static_quantization.yaml
   # - override /pruning: unstructured_l1.yaml
 
 ensemble_models:
+  # list of models
   - 195334d1007d4f2e8c958d5370b955f4
   - d67f5d21cf3b4b5b9155d519a492a7a8
   - 87febe3eea984cf7a9101c156063a59a
@@ -20,18 +27,17 @@ gpu_id: "3"
 logger:
   mlflow:
     tags:
-      type: ensemble + quantization + ood
+      type: ensemble
       ensamble_method: bagging
-      # pruning_method: "unstructured_l1"
 
 test:
-  # corruptions:
-  #   severities:
-  #     - 1
-  #     - 2
-  #   corruptions:
-  #     - motion_blur
-  #     - gaussian_blur
-  #   folder_name: CIFAR10
-  #   dataset_path: null
+  corruptions:
+    severities:
+      - 1
+      - 2
+    corruptions:
+      - motion_blur
+      - gaussian_blur
+    folder_name: CIFAR10
+    dataset_path: null
   ood: true

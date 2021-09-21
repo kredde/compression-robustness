@@ -1,11 +1,11 @@
 # @package _global_
 
 defaults:
+  # set type of pruning
   - override /pruning: unstructured_l1.yaml
 
-exp_id: "99c9ed56ad094470a2f759be807495af"
-
-exp_name: null
+exp_id: null # id of model
+exp_name: null # optional mlflow experiment name
 
 gpu_id: "3"
 
@@ -22,9 +22,6 @@ test:
       - 2
     corruptions:
       - motion_blur
-      # - jpeg_compression
-      # - contrast
-      # - brightness
       - gaussian_blur
     folder_name: CIFAR10
     dataset_path: null

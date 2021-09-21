@@ -1,12 +1,15 @@
 # @package _global_
 
+# to execute this experiment run:
+# python main.py +experiment=ood
+
 defaults:
   - override /quantization: static_quantization.yaml
   - override /ood: svhn_datamodule.yaml
 
-exp_id: 99c9ed56ad094470a2f759be807495af
-exp_name: null
-compressed_path: /data/logs/kristian/runs/default/13-17-20/a8d9b563-3dc5-47b0-8b9b-4949a3258333/model_0.25.ckpt
+exp_id: null # id of model
+exp_name: null # optional mlflow experiment name
+compressed_path: null # optional path to pruned model
 
 trainer:
   gpus: 0

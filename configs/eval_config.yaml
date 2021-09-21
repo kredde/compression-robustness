@@ -16,8 +16,9 @@ logger:
       stage: eval
 
 work_dir: ${hydra:runtime.cwd}
+# set datadir
 data_dir: /data/datasets
-
+# set logdir
 log_dir: /data/logs/kristian/runs/${logger.mlflow.experiment_name}/${now:%H-%M-%S}
 
 disable_warnings: True

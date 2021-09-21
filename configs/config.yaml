@@ -14,7 +14,9 @@ defaults:
   # - override hydra/job_logging: colorlog
 
 work_dir: ${hydra:runtime.cwd}
+# set datadir
 data_dir: /data/datasets
+# set logdir
 log_dir: /data/logs/kristian/runs/${logger.mlflow.experiment_name}/${now:%H-%M-%S}
 
 # use `python main.py debug=true` for easy debugging

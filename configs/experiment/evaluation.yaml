@@ -1,6 +1,9 @@
 # @package _global_
 
-exp_id: 2322cbf079bf4072a7ca40d3710b7575
+# to execute this experiment run:
+# python main.py +experiment=evaluation
+
+exp_id: null # id of model
 
 gpu_id: "3"
 

@@ -56,13 +56,6 @@ def eval(config: DictConfig, model: LightningModule,
     logger.log_hyperparams({'csv_path': path})
     Path(path).mkdir(parents=True, exist_ok=True)
 
-    # if config.get('ensemble'):
-    #     # save ensemble checkpoint
-    #     model_path = f"{path}/model.ckpt"
-    #     logger.log_hyperparams({f'model_path': model_path})
-    #     trainer.accelerator.model = model
-    #     trainer.save_checkpoint(model_path)
-
     # log test result before applying quantization
     test(model, datamodule, logger, config=config, path=path)
 
@@ -83,7 +76,8 @@ def eval(config: DictConfig, model: LightningModule,
 
         assert config.quantization.type in ['static']
         if config.quantization.type == 'static':
-            q_model = quantize_static(model, datamodule.train_dataloader(), **config.quantization)
+            q_model = quantize_static(
+                model, datamodule.train_dataloader(), **config.quantization)
 
         log.info('Quantization finished')
         q_size = get_model_size(q_model)

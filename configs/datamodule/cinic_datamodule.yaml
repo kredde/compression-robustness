@@ -1,6 +1,0 @@
-_target_: src.datamodules.cinic10.CINIC10DataModule
-
-data_dir: /data/datasets_students/kristian/cinic-10
-batch_size: 64
-num_workers: 48
-pin_memory: False

@@ -3,9 +3,9 @@
 defaults:
   - override /quantization: static_quantization.yaml
 
-exp_id: 40c2862ddf934b42835f8fc21089e5be
-exp_name: null
-compressed_path: /data/logs/kristian/runs/default/14-22-16/e11c17f0-1336-40cd-aedb-697485c51f89/model_0.03125.ckpt
+exp_id: null # id of model
+exp_name: null # optional mlflow experiment name
+compressed_path: null # optional path to pruned model
 
 trainer:
   gpus: 0
@@ -13,9 +13,7 @@ trainer:
 logger:
   mlflow:
     tags:
-      type: pruning + quantization
-      pruning_method: unstructured_l1
-      pruning_amount: 0.03125
+      type: quantization
 
 test:
   corruptions:
@@ -24,9 +22,6 @@ test:
       - 2
     corruptions:
       - motion_blur
-      # - jpeg_compression
-      # - contrast
-      # - brightness
       - gaussian_blur
     folder_name: CIFAR10
     dataset_path: null

@@ -2,6 +2,7 @@
 
 # to execute this experiment run:
 # python main.py +experiment=lenet
+
 defaults:
   - override /model: lenet.yaml
   - override /datamodule: cifar_datamodule.yaml
