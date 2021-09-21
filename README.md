@@ -1,8 +1,8 @@
-# Effects of Quantization on Robustness
+# Effects of Model Compression on Robustness
 
 ## Quick start
 1. Install dependencies `conda env create -f environment.yml -n envname`
-2. Set the `data_dir` and `log_dir` parameters in the `configs/config.yaml` and the `tracking_uri` in the `configs/logger/mlflow.yaml` config file.
+2. Set the `data_dir` and `log_dir` parameters in the `configs/config.yaml` and `configs/eval_config.yaml`. Set the `tracking_uri` in the `configs/logger/mlflow.yaml` config file.
 3. For training: Set the `gpu_id` in the config file to the gpu you want to use.
 4. Run an experiment using `python3 main.py +experiment=exp_name`
 
