@@ -24,7 +24,7 @@ def test_model(model: LightningModule, criterion: torch.nn.Module, data_loader: 
 
     accuracy = Accuracy()
     running_loss = 0
-    predictions = np.ndarray((0, 10))
+    predictions = np.ndarray((0, len(data_loader.dataset.classes)))
     targets = np.array([])
 
     with torch.no_grad():
